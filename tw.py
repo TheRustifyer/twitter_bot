@@ -3,8 +3,8 @@ import time
 
 #Setting the credentials to log in to Twitter API
 
-auth = tweepy.OAuthHandler('i9U2yMP9d9sQrD79czQaNWwRs', 'Aw8H1HAxQqDZoN744jkxAtxroMjM6KiXXMxXhMcFQ6svjrz5Dw')
-auth.set_access_token('1294915515975114752-8jguMYr3LijKaTpALd5rMhhoJZb5W5', 'UxNbPBHqHVwSBMRbwxUyCR0wr4If1muwaqHzSG7RUS3y0')
+auth = tweepy.OAuthHandler('''API KEYS HERE''')
+auth.set_access_token('''USER KEYS HERE''')
 
 api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
@@ -91,7 +91,7 @@ def output_format(*args):
 
 		else:
 
-			print(f"\nAqui o teu primo añadeu un diccionario antes de tempo\n")
+			print(f"\nSomething go wrong, please restart the aplication.\n")
 
 
 		if dictionary:
@@ -118,7 +118,7 @@ def follow_searched(data_array, data_decision):
 
 					api.create_friendship(user.id)
 
-					time.sleep(1/3600 )
+					time.sleep(1/3600)
 
 					print (f'{user_name} has been followed!')
 
@@ -138,7 +138,7 @@ def search_users(query, number_of_results_users):
 	targeted_users_intermediate = {}
 	targeted_users_high = {}
 
-	for target_user in tweepy.Cursor(api.search_users, q=query).items(number_of_results_users):
+	for target_user in limit_handled(tweepy.Cursor(api.search_users, q=query).items(number_of_results_users)):
 
 		if target_user.followers_count > 10 and target_user.followers_count <= 99:
 			# targeted_users_low[target_user.screen_name] = target_user.id
@@ -192,7 +192,7 @@ def tweet_threatment(hashtag, n_items):
 	hashtag_format = lambda x: ', '.join(["#" + json_elements.get('text') for json_elements in x])
 
 		#All the requested data will be saved here, to easily access desired data when be necesary...
-	tweets_mined = tweepy.Cursor(api.search, q=f'#{hashtag}',count=n_items, tweet_mode="extended").items(n_items)
+	tweets_mined = limit_handled(tweepy.Cursor(api.search, q=f'#{hashtag}',count=n_items, tweet_mode="extended").items(n_items))
 
 	for tweet in tweets_mined:
 		
@@ -222,18 +222,17 @@ def tweet_threatment(hashtag, n_items):
 
 
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<--------------------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-###Bot sections. This is part of the code where is supposed to be mantained by the 'bot'
-
+###Bot section. This is part of the code where 'BOT' actions are gonna be performed
 
 	# Here is where we mantain Twitter data for our bot to work with. 
 
 def followers_data():
 		
 	# All of your followers
-	data_followers = tweepy.Cursor(api.followers).items()
+	data_followers = limit_handled(tweepy.Cursor(api.followers).items())
 
 	# All of the followed accounts
-	data_following = tweepy.Cursor(api.friends).items()
+	data_following = limit_handled(tweepy.Cursor(api.friends).items())
 
 	return data_followers, data_following
 
@@ -258,9 +257,9 @@ def auto_follow_back(followers, following, fav_rt=False, interest_list=[]):
 
 			print(f'U have follow back a new follower, {follow_back_user.screen_name}')
 			
-			#Ahora escollemos un TW e RT + fav // Puede escalarse en otra versión a una función para reutilizar
+			#Choose to interact with user TWEETS // For next versions separate this part
 
-			if fav_rt: #Para a seguinte versión, separar esto...
+			if fav_rt:
 
 				for tweet in api.user_timeline(follow_back_user.id):
 
@@ -352,7 +351,6 @@ if __name__ == '__main__':
 						print('Fields can not be empty. Please, insert something to find for... and a number of results between 1 and 1000.\n')
 
 					
-
 				elif data_decision_2 == '2':
 
 					hastag = input('\nIntroduce a hastag to find: \n')
@@ -382,10 +380,6 @@ if __name__ == '__main__':
 		
 		elif data_decision == 'N' or data_decision == 'n':
 
-			pass
-			#Sitio dónde hacer las llamadas al bot.
-			#Este es el else de Y/N
-
 			while True:
 				
 				print('\nSo...')
@@ -401,6 +395,7 @@ if __name__ == '__main__':
 					print('\n As an advice, thought that this action usually increment your popularity ratio on TWTTER.\n')
 					use_rt_fav = input('Press [Y / n]:\n')
 
+					#Managed on auto_follow_back function
 					if use_rt_fav == 'Y' or use_rt_fav == 'y':
 
 						use_rt_fav = True
@@ -448,8 +443,12 @@ if __name__ == '__main__':
 					
 					print('\nUse one of the designed options please...\n')
 
-		print('\nCompleted program. If you wanna do something more, just run the program again.\n')
+
+		#End of the program
+		print('\nCompleted program. If you wanna do something more, just run the program again.\n')#Probably update this on a recursive While or change the main function to the streaming mode...
+		
 		print('See you next time!')
+		
 		break
 		
 		# Else from the main WHILE
