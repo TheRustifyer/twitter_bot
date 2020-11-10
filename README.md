@@ -27,7 +27,8 @@ Click on Code on the main page, get copy the url provided there and then open a 
 
 Open the [twitter.py] file, and replace:
 
-```auth = tweepy.OAuthHandler('''API KEYS HERE''')
+```
+   auth = tweepy.OAuthHandler('''API KEYS HERE''')
    auth.set_access_token('''USER KEYS HERE''')
 ```
 
